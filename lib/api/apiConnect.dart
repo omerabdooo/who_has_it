@@ -1,7 +1,7 @@
-// const String connectApi = "http//10.0.2.2/who_has_it_api" ;
 
 const String connectApi = "http://10.0.2.2/userProductsApi" ;
-const String imageslink = "http://10.0.2.2/userProductsApi/uploade" ;
+
+const String imageslink = "http://10.0.2.2/userProductsApi/images" ;
 
 // Users
 const String  creatUserApi = "$connectApi/createUser.php";

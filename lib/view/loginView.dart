@@ -33,19 +33,21 @@ class _loginViewState extends State<loginView> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => userProductsView()));
 
-      // print(response);
+      print(response);
+
       globalUserId = response["data"][0]["user_id"];
       globalUserName = response["data"][0]["user_username"];
     } 
-    // else {
-    //   // print("faield");
-    //   // print(response);
-    // }
+    else {
+      print("faield");
+      print(response);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Login Screen',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
@@ -151,7 +153,6 @@ class _loginViewState extends State<loginView> {
                     TextButton(
                       onPressed: () {
                         
-                        // Navigate to sign up page
                         Navigator.push(
                             context,
                             MaterialPageRoute(

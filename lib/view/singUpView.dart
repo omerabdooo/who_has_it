@@ -26,15 +26,15 @@ class _singUpViewState extends State<singUpView> {
       "user_email": emailController.text,
       "user_password": passwordController.text
     });
-    // print(response);
+    print(response);
     if (response["status"] == 'success') {
 
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
     } 
-    // else {
-    //   print("Sing up Failed");
-    // }
+    else {
+      print("Sing up Failed");
+    }
   }
 
   @override
@@ -171,7 +171,7 @@ class _singUpViewState extends State<singUpView> {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Navigate to login page
+                        
                         Navigator.push(
                             context,
                             MaterialPageRoute(

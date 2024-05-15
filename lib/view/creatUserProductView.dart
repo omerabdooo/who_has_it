@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:who_has_it/models/globalVariable.dart';
 import 'package:who_has_it/models/crud.dart';
-import 'package:who_has_it/view/loginView.dart';
 import 'package:who_has_it/view/userProductsView.dart';
 
 import '../api/apiConnect.dart';
@@ -15,9 +14,6 @@ class creatUserProductView extends StatefulWidget {
 }
 
 class _creatUserProductViewState extends State<creatUserProductView> {
-
-  // GlobalKey FormState = GlobalKey();
-
   // for using it with the image
 
   File? myfile;
@@ -31,35 +27,34 @@ class _creatUserProductViewState extends State<creatUserProductView> {
   // model instance
   final crud _crud = crud();
 
-createUserProducts() async {
+  createUserProducts() async {
+    // this is for validate that the image is not null
+    // if (myfile== null) return
 
-  // this is for validate that the image is not null
-  // if (myfile== null) return 
+    var response = await _crud.postRequestImage(
+        createUserProduct,
+        {
+          "product_name": nameController.text,
+          "product_description": descriptionController.text,
+          // "product_image": "",
+          "product_price": priceController.text,
 
+          "user_product": "$globalUserId"
+        },
+        myfile!);
 
-    var response = await _crud.postRequestImage(createUserProduct, {
-
-      "product_name": nameController.text,
-      "product_description": descriptionController.text,
-      // "product_image": "",
-      "product_price": priceController.text,
-      "user_product": "$globalUserId"
-    },myfile!);
     print(response);
     if (response["status"] == 'success') {
-
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => userProductsView()),
         ModalRoute.withName('/'),
       );
-    } 
-    // else {
-    //   print("Sing up Failed");
-    // }
+    } else {
+      print("Sing up Failed");
+      print(response);
+    }
   }
-
-
 
   // createUserproduct endpoint (work without image send)
 
@@ -80,7 +75,7 @@ createUserProducts() async {
   //       MaterialPageRoute(builder: (context) => userProductsView()),
   //       ModalRoute.withName('/'),
   //     );
-  //   } 
+  //   }
   //   // else {
   //   //   print("Sing up Failed");
   //   // }
@@ -125,7 +120,7 @@ createUserProducts() async {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      // errorText: nameValidator(nameController.text),
+                      errorText: nameValidator(nameController.text),
                     ),
                   ),
                 ),
@@ -143,7 +138,8 @@ createUserProducts() async {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      // errorText: descriptionValidator(descriptionController.text),
+                      errorText:
+                          descriptionValidator(descriptionController.text),
                     ),
                     autocorrect: false,
                   ),
@@ -165,61 +161,58 @@ createUserProducts() async {
                       ),
                       // errorText: priceValidator(priceController.text),
                     ),
-                    //  keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.number,
                   ),
                 ),
 
                 const SizedBox(height: 20.0),
 
-               // add image
+                // add image
 
                 ElevatedButton(
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
-                      builder: (context) =>Container(
+                      builder: (context) => Container(
                         alignment: Alignment.center,
                         height: 100,
-                        child:  InkWell(
-
+                        child: InkWell(
                           // the logic of adding an image
 
-                          onTap:() async {
-                            XFile? xfile = await ImagePicker().pickImage(
-                              source:ImageSource.gallery);
-                              myfile = File(xfile!.path);
-                          Navigator.of(context).pop();
+                          onTap: () async {
+                            XFile? xfile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+
+                            // we declare the variable ' myfile ' above in the beging
+                            // and use it in the postRequestImage parameter
+                            myfile = File(xfile!.path);
+                            Navigator.of(context).pop();
                           },
-                          
+
                           child: Text(
                             "choose image from Gallery",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          ),
-                      ) ,
-                      );
+                        ),
+                      ),
+                    );
                   },
                   child: const Text("choose image"),
-                  ),
+                ),
 
                 const SizedBox(height: 20.0),
 
-                // Sign Up Button
+                // Create product Button
 
                 ElevatedButton(
                   onPressed: () async {
-                    // if (nameValidator(nameController.text) == null &&
-                    //     // emailValidator(emailController.text) == null &&
-                    //     passwordValidator(passwordController.text) == null) {
-
-                    await createUserProducts();
-
-                    // } else {
-                    //   print("falied");
-                    //   print(nameValidator(nameController.text));
-                    //   print(passwordValidator(passwordController.text));
-                    //   print(emailValidator(emailController.text));
-                    // }
+                    if (nameValidator(nameController.text) == null &&
+                        descriptionValidator(descriptionController.text) ==null
+                        // priceValidator(priceController.text) == null
+                        )
+                        {
+                          await createUserProducts();
+                        }
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -273,27 +266,25 @@ createUserProducts() async {
 
   // validator methods
 
-//   String? nameValidator(String name) {
-//     if (name.isEmpty || name.length < 2) {
-//       return 'Name Required To Be More Than Two Characthers ';
-//     }
-//     return null;
-//   }
-// }
+  String? nameValidator(String name) {
+    if (name.length < 3 || name.length > 20) {
+      return "Password must be at more than 2 and less than 20 characters long";
+    }
+    return null;
+  }
 
-// String? emailValidator(String email) {
-//   final RegExp emailPattern =
-//       RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,}$');
+  String? descriptionValidator(String description) {
+    if (description.length < 2 || description.length > 30) {
+      return "Password must be at more than 2 and less than 20 characters long";
+    }
+    return null;
+  }
 
-//   if (!emailPattern.hasMatch(email)) {
-//     return 'Invalid email format';
-//   }
-//   return null;
-// }
-
-// String? passwordValidator(String password) {
-//   if (password.length < 8) {
-//     return 'Password must be at least 8 characters long';
-//   }
-//   return null;
+  // String? priceValidator(int price) {
+  //   if ( int num == false) {
+  //     return "the price must be numbers";
+  //   } else {
+  //     return null;
+  //   }
+  // }
 }

@@ -11,13 +11,11 @@ class userProductsView extends StatefulWidget {
 }
 
 class _userProductsViewState extends State<userProductsView> {
-
   // model instance
   crud _crud = crud();
 
   getUserProducts() async {
     var response = await _crud.postRequest(getAllUserProducts, {
-
       "user_id": "$globalUserId" // here user_id
     });
     return response;
@@ -67,8 +65,7 @@ class _userProductsViewState extends State<userProductsView> {
                                   color: Colors.indigo,
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(60),
-                                  )
-                                  ),
+                                  )),
                               height: MediaQuery.of(context).size.height - 170,
                               child: creatUserProductView(),
                             );
@@ -119,10 +116,11 @@ class _userProductsViewState extends State<userProductsView> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(10.0),
+                            return 
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6.0 , left: 5.0, right: 5.0),
                               child: Container(
-                                height: 120,
+                                height: 90,
                                 decoration: const BoxDecoration(
                                   color: Colors.indigo,
                                   borderRadius: BorderRadius.only(
@@ -132,19 +130,15 @@ class _userProductsViewState extends State<userProductsView> {
                                       bottomRight: Radius.circular(5.0)),
                                 ),
                                 child: ListTile(
-                                    contentPadding: const EdgeInsets.all(5.0),
-                                    // our image gitting from api
-                                    // leading: Text("${snapshot.data["data"][index]["product_image"]}"),
-                                    leading: Image.network("$imageslink/${snapshot.data["data"][index]["product_image"]}"),
-
-                                    // using icone temeperlly
-                                    // leading: const Icon(
-                                    //   Icons.book,
-                                    //   color: Colors.white,
-                                    //   size: 75,
-                                    // ),
-
-                                    // Title text with styling
+                              
+                                    leading: CircleAvatar(
+                                      radius: 35,
+                                      backgroundImage: NetworkImage( 
+                                          "$imageslink/${snapshot.data["data"][index]["product_image"]}",
+                                          ),
+                                    ),
+                                   
+                                    // Title 
                                     title: Text(
                                       '${snapshot.data["data"][index]["product_name"]}',
                                       style: const TextStyle(
@@ -153,12 +147,13 @@ class _userProductsViewState extends State<userProductsView> {
                                         color: Colors.black,
                                       ),
                                     ),
-                                    
-                                    // Subtitle text with styling (optional)
+
+                                    // Subtitle
+
                                     subtitle: Padding(
                                       padding: const EdgeInsets.only(top: 5.0),
                                       child: Text(
-                                        '${snapshot.data["data"][index]["product_description"]}', // Replace with actual data
+                                        '${snapshot.data["data"][index]["product_description"]}',
                                         style: const TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.white,
@@ -166,12 +161,13 @@ class _userProductsViewState extends State<userProductsView> {
                                       ),
                                     ),
 
-                                    // Trailing widget (optional)
+                                    // Trailing
+
                                     trailing: Padding(
                                       padding: const EdgeInsets.only(
                                           top: 30.0, right: 5.0),
                                       child: Text(
-                                        "${snapshot.data["data"][index]["product_price"]}",
+                                        "${snapshot.data["data"][index]["product_price"]} \$ ",
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
@@ -189,7 +185,6 @@ class _userProductsViewState extends State<userProductsView> {
 
                       return const Center(child: Text("Loading ..."));
                     },
-                    // child:
                   ),
                 ),
               ),
@@ -200,3 +195,5 @@ class _userProductsViewState extends State<userProductsView> {
     );
   }
 }
+
+
